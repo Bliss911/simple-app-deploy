@@ -28,18 +28,18 @@ spec:
             - name: gunicorn
               containerPort: 5000
           resources: {{ toYaml .Values.web.resources | nindent 12 }}
-          readinessProbe:
-            initialDelaySeconds: 10
-            httpGet:
-              port: gunicorn
-              path: /
-          livenessProbe:
-            initialDelaySeconds: 10
-            exec:
-              command:
-                - /bin/sh
-                - -c 
-                - "pidof -x gunicorn"
+          # readinessProbe:
+          #   initialDelaySeconds: 10
+          #   httpGet:
+          #     port: gunicorn
+          #     path: /
+          # livenessProbe:
+          #   initialDelaySeconds: 10
+          #   exec:
+          #     command:
+          #       - /bin/sh
+          #       - -c 
+          #       - "pidof -x gunicorn"
 
 ---
 

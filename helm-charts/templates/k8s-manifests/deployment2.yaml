@@ -23,18 +23,18 @@ spec:
           ports:
             - name: gunicorn
               containerPort: 5000
-          readinessProbe:
-            initialDelaySeconds: 10
-            httpGet:
-              port: gunicorn
-              path: /
-          livenessProbe:
-            initialDelaySeconds: 10
-            exec:
-              command:
-                - /bin/sh
-                - -c 
-                - "pidof -x gunicorn"
+          # readinessProbe:
+          #   initialDelaySeconds: 10
+          #   httpGet:
+          #     port: gunicorn
+          #     path: /
+          # livenessProbe:
+          #   initialDelaySeconds: 10
+          #   exec:
+          #     command:
+          #       - /bin/sh
+          #       - -c 
+          #       - "pidof -x gunicorn"
 
 ---
 
