@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hello-world-job
+  namespace: python-demo-app
+spec:
+  schedule: "0 0 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          securityContext:
+            runAsGroup: 1000
+            runAsUser: 1000
+          restartPolicy: OnFailure
+          containers:
+          - name: python-demo-app-hello-world-job
+            image: python-demo-app:init
+            command:
+              - python3
+            args:
+              - cli.py
+          restartPolicy: Never

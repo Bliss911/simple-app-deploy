@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: background
+spec:
+  replicas: {{ .Values.web.replicas }}
+  selector:
+    matchLabels:
+      app: background
+      role: web
+  template:
+    metadata:
+      labels:
+        app: background
+        role: web
+    spec:
+      securityContext:
+        runAsGroup: 1000
+        runAsUser: 1000
+      containers:
+        - name: {{ .Release.Name }}-web
+          image: {{ .Values.web.repository }}:{{ .Values.web.tag }}
+          args:
+          {{- range .Values.web.args }}
+            - {{ quote . }}
+          {{- end }}
+          ports:
+            - name: gunicorn
+              containerPort: 5000
+          resources: {{ toYaml .Values.web.resources | nindent 12 }}
+          readinessProbe:
+            initialDelaySeconds: 10
+            httpGet:
+              port: gunicorn
+              path: /
+          livenessProbe:
+            initialDelaySeconds: 10
+            exec:
+              command:
+                - /bin/sh
+                - -c 
+                - "pidof -x gunicorn"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: background-service
+spec:
+  selector:
+    app: background
+    role: web
+  ports:
+    - name: http
+      port: 80
+      targetPort: gunicorn

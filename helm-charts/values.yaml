@@ -1,0 +1,45 @@
+web:
+  replicas: 1
+  repository: innociousbliss/python-demo-app
+  pullPolicy: Always
+  tag: init
+  args:
+    - '--bind'
+    - '0.0.0.0'
+    - 'app:app'
+
+cronjob:
+  schedule: 0 0 * * *
+  image: innociousbliss/python-demo-app
+  tag: init
+  restartPolicy: Never
+  command:
+    - python3
+  args:
+    - cli.py
+ 
+service:
+  type: NodePort
+  port: 80
+  targetPort: 5000
+  nodePort: 30005
+
+ingress:
+  enabled: true
+  className: "simple-app"
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: localhost
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+
+configmap:
+  enabled: true
+  data:
+    PORT: 8000
+    HOST: 0.0.0.0
